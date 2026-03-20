@@ -1,65 +1,159 @@
-import Image from "next/image";
+import Link from 'next/link';
+import Button from '@/components/ui/Button';
+import SectionHeading from '@/components/ui/SectionHeading';
+import StatsCounter from '@/components/ui/StatsCounter';
+import AnimatedSection from '@/components/ui/AnimatedSection';
+import ServicesGrid from '@/components/sections/ServicesGrid';
+import ProjectsGrid from '@/components/sections/ProjectsGrid';
+import ClientsBar from '@/components/sections/ClientsBar';
+import CTABanner from '@/components/sections/CTABanner';
+import {
+  services,
+  projects,
+  clients,
+  stats,
+  companyInfo,
+} from '@/lib/seed-data';
 
-export default function Home() {
+// To switch to Sanity:
+// import { client } from '@/lib/sanity';
+// import { getHomepage, getServices, getFeaturedProjects, getClients } from '@/lib/queries';
+// Then fetch data in the component body using: const data = await getHomepage();
+
+export default function HomePage() {
+  const featuredProjects = projects.filter((p) => p.featured).slice(0, 4);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {/* ── Hero Section ── */}
+      <section className="relative flex min-h-[85vh] items-center bg-slate-dark">
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-dark via-slate-dark to-primary-dark/20" />
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              Engineering Excellence Since 2015
+            </p>
+          </AnimatedSection>
+
+          <AnimatedSection delay={0.1}>
+            <h1 className="mt-4 max-w-3xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+              Engineering Structures{' '}
+              <span className="text-primary">with Responsibility</span>
+            </h1>
+          </AnimatedSection>
+
+          <AnimatedSection delay={0.2}>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
+              BridgeCraft Engineers & Consultants delivers safe, sustainable, and
+              innovative infrastructure solutions — from bridges and highways to
+              buildings and industrial facilities.
+            </p>
+          </AnimatedSection>
+
+          <AnimatedSection delay={0.3}>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Button href="/services" variant="primary" size="lg">
+                Our Services
+              </Button>
+              <Button href="/contact" variant="secondary" size="lg">
+                Get in Touch
+              </Button>
+            </div>
+          </AnimatedSection>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </section>
+
+      {/* ── Introduction ── */}
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <SectionHeading
+              title="Building the Foundations of Tomorrow"
+              subtitle="A trusted multidisciplinary engineering consultancy"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <AnimatedSection className="mt-8">
+              <p className="text-base leading-relaxed text-charcoal/80">
+                {companyInfo.introText}
+              </p>
+            </AnimatedSection>
+            <AnimatedSection className="mt-6">
+              <Button href="/about/introduction" variant="ghost">
+                Learn More About Us
+              </Button>
+            </AnimatedSection>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* ── Services Overview ── */}
+      <section className="bg-off-white py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title="Our Services"
+            subtitle="Comprehensive engineering solutions across four core disciplines"
+          />
+          <div className="mt-12">
+            <ServicesGrid
+              services={services.map((s) => ({
+                title: s.title,
+                slug: s.slug,
+                shortDescription: s.shortDescription,
+              }))}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Featured Projects ── */}
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title="Featured Projects"
+            subtitle="A selection of landmark projects from our portfolio"
+          />
+          <div className="mt-12">
+            <ProjectsGrid projects={featuredProjects} />
+          </div>
+          <AnimatedSection className="mt-10 text-center">
+            <Button href="/projects" variant="ghost">
+              View All Projects
+            </Button>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ── Stats Counter ── */}
+      <section className="bg-off-white py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading title="BridgeCraft by the Numbers" />
+          <div className="mt-12">
+            <StatsCounter stats={stats} />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Clients Trust Bar ── */}
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title="Trusted by Leading Organisations"
+            subtitle="We are proud to work with premier government agencies and private enterprises"
+          />
+          <div className="mt-12">
+            <ClientsBar clients={clients} />
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA Banner ── */}
+      <CTABanner
+        title="Ready to Start Your Next Project?"
+        subtitle="Let us bring our engineering expertise to your infrastructure challenge."
+        buttonText="Contact Us"
+        buttonHref="/contact"
+      />
+    </>
   );
 }
