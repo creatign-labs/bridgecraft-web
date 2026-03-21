@@ -2,14 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import Button from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
-import { services } from '@/lib/seed-data';
+import { sanityFetch } from '@/lib/sanity';
+import { allServicesQuery } from '@/lib/queries';
+import { services as seedServices } from '@/lib/seed-data';
 
-// To switch to Sanity:
-// import { client } from '@/lib/sanity';
-// import { getAllServices } from '@/lib/queries';
-// const services = await getAllServices();
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Our Services',
@@ -17,7 +15,28 @@ export const metadata: Metadata = {
     'BridgeCraft Engineers offers structural engineering, bridge engineering, transportation engineering, and project management consultancy services.',
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const sanityServices = await sanityFetch<
+    {
+      _id: string;
+      title: string;
+      slug: { current: string };
+      shortDescription: string;
+    }[]
+  >(allServicesQuery);
+
+  const services = sanityServices
+    ? sanityServices.map((s) => ({
+        title: s.title,
+        slug: s.slug.current,
+        shortDescription: s.shortDescription,
+      }))
+    : seedServices.map((s) => ({
+        title: s.title,
+        slug: s.slug,
+        shortDescription: s.shortDescription,
+      }));
+
   return (
     <>
       <PageHero

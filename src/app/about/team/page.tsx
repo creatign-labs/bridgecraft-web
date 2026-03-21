@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import { teamMembers } from '@/lib/seed-data';
+import { sanityFetch } from '@/lib/sanity';
+import { teamMembersQuery } from '@/lib/queries';
+import { teamMembers as seedTeamMembers } from '@/lib/seed-data';
 
-// To switch to Sanity:
-// import { client } from '@/lib/sanity';
-// import { getTeamMembers } from '@/lib/queries';
-// const members = await getTeamMembers();
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Our Team',
@@ -14,7 +13,20 @@ export const metadata: Metadata = {
     'Meet the experienced engineers and consultants behind BridgeCraft Engineers & Consultants.',
 };
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const sanityMembers = await sanityFetch<
+    {
+      _id: string;
+      name: string;
+      designation: string;
+      photo?: unknown;
+      bio: string;
+      order: number;
+    }[]
+  >(teamMembersQuery);
+
+  const teamMembers = sanityMembers ?? seedTeamMembers;
+
   return (
     <>
       <PageHero

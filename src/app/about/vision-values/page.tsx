@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import { Shield, Award, Lightbulb, Leaf, Users, HardHat } from 'lucide-react';
+import { sanityFetch } from '@/lib/sanity';
+import { visionValuesQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Our Vision & Values',
@@ -10,7 +14,7 @@ export const metadata: Metadata = {
     'Discover the vision and core values that drive BridgeCraft Engineers to deliver world-class infrastructure solutions.',
 };
 
-const values = [
+const defaultValues = [
   {
     icon: Shield,
     title: 'Integrity',
@@ -49,7 +53,30 @@ const values = [
   },
 ];
 
-export default function VisionValuesPage() {
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Shield,
+  Award,
+  Lightbulb,
+  Leaf,
+  Users,
+  HardHat,
+};
+
+export default async function VisionValuesPage() {
+  const data = await sanityFetch<{
+    visionText: string;
+    values: { title: string; description: string; icon: string }[];
+  }>(visionValuesQuery);
+
+  const visionText = data?.visionText ?? companyInfo.visionStatement;
+  const values = data?.values
+    ? data.values.map((v) => ({
+        icon: iconMap[v.icon] || Shield,
+        title: v.title,
+        description: v.description,
+      }))
+    : defaultValues;
+
   return (
     <>
       <PageHero
@@ -66,7 +93,7 @@ export default function VisionValuesPage() {
                 Our Vision
               </h2>
               <p className="mt-4 text-base leading-relaxed text-charcoal/80">
-                {companyInfo.visionStatement}
+                {visionText}
               </p>
             </div>
           </AnimatedSection>

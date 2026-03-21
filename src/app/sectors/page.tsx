@@ -10,7 +10,11 @@ import {
   Building2,
   Factory,
 } from 'lucide-react';
-import { sectors } from '@/lib/seed-data';
+import { sanityFetch } from '@/lib/sanity';
+import { allSectorsQuery } from '@/lib/queries';
+import { sectors as seedSectors } from '@/lib/seed-data';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Sectors We Serve',
@@ -28,7 +32,26 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Factory,
 };
 
-export default function SectorsPage() {
+export default async function SectorsPage() {
+  const sanitySectors = await sanityFetch<
+    {
+      _id: string;
+      name: string;
+      slug: { current: string };
+      description: string;
+      icon: string;
+    }[]
+  >(allSectorsQuery);
+
+  const sectors = sanitySectors
+    ? sanitySectors.map((s) => ({
+        name: s.name,
+        slug: s.slug?.current ?? s.name.toLowerCase().replace(/\s+/g, '-'),
+        description: s.description,
+        icon: s.icon,
+      }))
+    : seedSectors;
+
   return (
     <>
       <PageHero

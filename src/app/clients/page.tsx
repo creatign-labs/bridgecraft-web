@@ -2,12 +2,11 @@ import type { Metadata } from 'next';
 import PageHero from '@/components/layout/PageHero';
 import ClientsBar from '@/components/sections/ClientsBar';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import { clients } from '@/lib/seed-data';
+import { sanityFetch } from '@/lib/sanity';
+import { allClientsQuery } from '@/lib/queries';
+import { clients as seedClients } from '@/lib/seed-data';
 
-// To switch to Sanity:
-// import { client as sanityClient } from '@/lib/sanity';
-// import { getAllClients } from '@/lib/queries';
-// const clients = await getAllClients();
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Our Clients',
@@ -15,7 +14,19 @@ export const metadata: Metadata = {
     'BridgeCraft Engineers is trusted by premier government agencies, construction firms, and private sector developers across India.',
 };
 
-export default function ClientsPage() {
+export default async function ClientsPage() {
+  const sanityClients = await sanityFetch<
+    { _id: string; name: string; logo?: string }[]
+  >(allClientsQuery);
+
+  const clients = sanityClients
+    ? sanityClients.map((c) => ({
+        _id: c._id,
+        name: c.name,
+        order: 0,
+      }))
+    : seedClients;
+
   return (
     <>
       <PageHero

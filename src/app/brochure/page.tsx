@@ -3,7 +3,11 @@ import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import Button from '@/components/ui/Button';
 import { Download, FileText } from 'lucide-react';
+import { sanityFetch } from '@/lib/sanity';
+import { brochureQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Company Brochure',
@@ -11,7 +15,18 @@ export const metadata: Metadata = {
     'Download the BridgeCraft Engineers & Consultants company brochure for an overview of our services, projects, and capabilities.',
 };
 
-export default function BrochurePage() {
+export default async function BrochurePage() {
+  const data = await sanityFetch<{
+    title: string;
+    description: string;
+    fileUrl: string;
+  }>(brochureQuery);
+
+  const brochureTitle = data?.title ?? 'BridgeCraft Company Brochure';
+  const brochureDescription = data?.description ?? companyInfo.introText;
+  const brochureUrl =
+    data?.fileUrl ?? '/brochure/bridgecraft-brochure.pdf';
+
   return (
     <>
       <PageHero
@@ -23,7 +38,7 @@ export default function BrochurePage() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <p className="text-base leading-relaxed text-charcoal/85">
-              {companyInfo.introText}
+              {brochureDescription}
             </p>
 
             <p className="mt-6 text-base leading-relaxed text-charcoal/85">
@@ -40,12 +55,13 @@ export default function BrochurePage() {
                 <FileText className="h-8 w-8 text-primary-dark" />
               </div>
               <h2 className="mt-4 font-heading text-xl font-semibold text-charcoal">
-                BridgeCraft Company Brochure
+                {brochureTitle}
               </h2>
-              <p className="mt-2 text-sm text-charcoal/60">PDF &middot; ~5 MB</p>
+              <p className="mt-2 text-sm text-charcoal/60">
+                PDF &middot; ~5 MB
+              </p>
               <div className="mt-6">
-                {/* Replace href with actual PDF URL when available */}
-                <Button href="/brochure/bridgecraft-brochure.pdf" variant="primary" size="lg">
+                <Button href={brochureUrl} variant="primary" size="lg">
                   <Download className="mr-2 h-4 w-4" />
                   Download Brochure
                 </Button>

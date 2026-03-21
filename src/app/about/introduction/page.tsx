@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import { sanityFetch } from '@/lib/sanity';
+import { aboutIntroductionQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
 
-// To switch to Sanity:
-// import { client } from '@/lib/sanity';
-// import { getAboutIntroduction } from '@/lib/queries';
-// const data = await getAboutIntroduction();
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -14,7 +13,15 @@ export const metadata: Metadata = {
     'Learn about BridgeCraft Engineers & Consultants — our history, expertise, and commitment to engineering excellence.',
 };
 
-export default function AboutIntroductionPage() {
+export default async function AboutIntroductionPage() {
+  const data = await sanityFetch<{ content: unknown; image: unknown }>(
+    aboutIntroductionQuery,
+  );
+
+  const aboutText = data
+    ? String(data.content ?? companyInfo.aboutText)
+    : companyInfo.aboutText;
+
   return (
     <>
       <PageHero
@@ -26,7 +33,7 @@ export default function AboutIntroductionPage() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="prose prose-lg max-w-none">
-              {companyInfo.aboutText.split('\n\n').map((paragraph, i) => (
+              {aboutText.split('\n\n').map((paragraph, i) => (
                 <p
                   key={i}
                   className="mb-6 text-base leading-relaxed text-charcoal/85"

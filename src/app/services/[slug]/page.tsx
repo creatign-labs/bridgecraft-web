@@ -2,26 +2,46 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import Button from '@/components/ui/Button';
 import CTABanner from '@/components/sections/CTABanner';
 import { CheckCircle } from 'lucide-react';
-import { services } from '@/lib/seed-data';
+import { sanityFetch } from '@/lib/sanity';
+import { serviceBySlugQuery, allServicesQuery } from '@/lib/queries';
+import { services as seedServices } from '@/lib/seed-data';
 
-// To switch to Sanity:
-// import { client } from '@/lib/sanity';
-// import { getServiceBySlug } from '@/lib/queries';
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return services.map((s) => ({ slug: s.slug }));
+  const sanityServices = await sanityFetch<{ slug: { current: string } }[]>(
+    allServicesQuery,
+  );
+
+  if (sanityServices) {
+    return sanityServices.map((s) => ({ slug: s.slug.current }));
+  }
+
+  return seedServices.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const service = services.find((s) => s.slug === slug);
+
+  const sanityService = await sanityFetch<{
+    title: string;
+    shortDescription: string;
+  }>(serviceBySlugQuery, { slug });
+
+  if (sanityService) {
+    return {
+      title: sanityService.title,
+      description: sanityService.shortDescription,
+    };
+  }
+
+  const service = seedServices.find((s) => s.slug === slug);
   if (!service) return {};
 
   return {
@@ -32,7 +52,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const service = services.find((s) => s.slug === slug);
+
+  const sanityService = await sanityFetch<{
+    _id: string;
+    title: string;
+    slug: { current: string };
+    shortDescription: string;
+    fullDescription: string;
+    keyCapabilities: string[];
+  }>(serviceBySlugQuery, { slug });
+
+  const service = sanityService
+    ? {
+        title: sanityService.title,
+        shortDescription: sanityService.shortDescription,
+        fullDescription: sanityService.fullDescription,
+        keyCapabilities: sanityService.keyCapabilities ?? [],
+      }
+    : seedServices.find((s) => s.slug === slug);
 
   if (!service) {
     notFound();

@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import { sanityFetch } from '@/lib/sanity';
+import { missionStatementQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Mission Statement',
@@ -9,7 +13,11 @@ export const metadata: Metadata = {
     'Our mission is to provide world-class civil and structural engineering solutions that are safe, sustainable, and value-driven.',
 };
 
-export default function MissionStatementPage() {
+export default async function MissionStatementPage() {
+  const data = await sanityFetch<{ content: string }>(missionStatementQuery);
+
+  const missionStatement = data?.content ?? companyInfo.missionStatement;
+
   return (
     <>
       <PageHero
@@ -22,7 +30,7 @@ export default function MissionStatementPage() {
           <AnimatedSection>
             <div className="mx-auto mb-8 h-1 w-16 rounded-full bg-primary" />
             <blockquote className="font-heading text-2xl font-medium leading-relaxed text-charcoal sm:text-3xl">
-              &ldquo;{companyInfo.missionStatement}&rdquo;
+              &ldquo;{missionStatement}&rdquo;
             </blockquote>
           </AnimatedSection>
 

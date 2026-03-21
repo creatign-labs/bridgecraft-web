@@ -4,23 +4,44 @@ import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import Button from '@/components/ui/Button';
 import { MapPin, Building2, Landmark, FileText } from 'lucide-react';
-import { projects } from '@/lib/seed-data';
+import { sanityFetch } from '@/lib/sanity';
+import { projectBySlugQuery, allProjectsQuery } from '@/lib/queries';
+import { projects as seedProjects } from '@/lib/seed-data';
 
-// To switch to Sanity:
-// import { client } from '@/lib/sanity';
-// import { getProjectBySlug } from '@/lib/queries';
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  const sanityProjects = await sanityFetch<{ slug: { current: string } }[]>(
+    allProjectsQuery,
+  );
+
+  if (sanityProjects) {
+    return sanityProjects.map((p) => ({ slug: p.slug.current }));
+  }
+
+  return seedProjects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+
+  const sanityProject = await sanityFetch<{
+    title: string;
+    description: string;
+  }>(projectBySlugQuery, { slug });
+
+  if (sanityProject) {
+    return {
+      title: sanityProject.title,
+      description: sanityProject.description?.slice(0, 160),
+    };
+  }
+
+  const project = seedProjects.find((p) => p.slug === slug);
   if (!project) return {};
 
   return {
@@ -31,7 +52,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+
+  const sanityProject = await sanityFetch<{
+    _id: string;
+    title: string;
+    slug: { current: string };
+    client: string;
+    authority: string;
+    location: string;
+    scope: string;
+    description: string;
+    keyHighlights: string[];
+    sector?: { name: string };
+  }>(projectBySlugQuery, { slug });
+
+  const project = sanityProject
+    ? {
+        title: sanityProject.title,
+        client: sanityProject.client,
+        authority: sanityProject.authority,
+        location: sanityProject.location,
+        scope: sanityProject.scope,
+        description: sanityProject.description,
+        keyHighlights: sanityProject.keyHighlights ?? [],
+        sector: sanityProject.sector?.name ?? '',
+      }
+    : seedProjects.find((p) => p.slug === slug);
 
   if (!project) {
     notFound();
