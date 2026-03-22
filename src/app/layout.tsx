@@ -10,7 +10,12 @@ export const metadata: Metadata = {
   },
   description:
     'BridgeCraft Engineers & Consultants is a multidisciplinary civil and structural engineering consultancy specialising in bridge design, structural engineering, transportation engineering, and project management consultancy.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://bridgecraft.in'),
+  metadataBase: new URL(
+    (() => {
+      const url = process.env.NEXT_PUBLIC_SITE_URL || 'https://bridgecraft.in';
+      return url.startsWith('http') ? url : `https://${url}`;
+    })(),
+  ),
   openGraph: {
     type: 'website',
     locale: 'en_IN',

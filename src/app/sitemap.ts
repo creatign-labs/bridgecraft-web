@@ -4,7 +4,8 @@ import { services, projects } from '@/lib/seed-data';
 // To switch to Sanity:
 // Fetch service and project slugs from Sanity instead of seed-data.
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://bridgecraft.in';
+const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bridgecraft.in';
+const BASE_URL = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
