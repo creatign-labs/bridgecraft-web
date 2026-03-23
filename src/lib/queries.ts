@@ -61,11 +61,12 @@ export const teamMembersQuery = groq`
 
 // Services - All
 export const allServicesQuery = groq`
-  *[_type == "service"] {
+  *[_type == "service"] | order(order asc) {
     _id,
     title,
     slug,
     shortDescription,
+    iconImage { asset->, alt },
     icon,
     keyCapabilities
   }

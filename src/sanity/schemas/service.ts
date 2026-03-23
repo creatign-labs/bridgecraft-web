@@ -40,6 +40,13 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'iconImage',
+      title: 'Service Icon',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Square icon for homepage service card (200x200)',
+    }),
+    defineField({
       name: 'icon',
       title: 'Icon',
       type: 'string',

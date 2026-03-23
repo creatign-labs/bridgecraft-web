@@ -1,59 +1,101 @@
-import type { ReactNode } from "react";
-import Card from "@/components/ui/Card";
-import AnimatedSection from "@/components/ui/AnimatedSection";
-import { ArrowRight } from "lucide-react";
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ClipboardCheck, Building2, Layers, Radio } from "lucide-react";
+import { urlFor, isSanityConfigured } from "@/lib/sanity";
+
+const fallbackIcons = [ClipboardCheck, Building2, Layers, Radio];
+
+interface SanityImage {
+  asset: unknown;
+  alt?: string;
+}
 
 interface Service {
   title: string;
   slug: string;
   shortDescription: string;
-  icon?: ReactNode;
+  iconImage?: SanityImage;
 }
 
 interface ServicesGridProps {
   services: Service[];
 }
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 },
+  },
+};
+
 export default function ServicesGrid({ services }: ServicesGridProps) {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {services.map((service, index) => (
-        <AnimatedSection key={service.slug} delay={index * 0.1}>
-          <Card href={`/services/${service.slug}`} className="group p-6">
-            {/* Icon placeholder */}
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-primary/10 text-primary-dark transition-colors group-hover:bg-primary/20">
-              {service.icon ?? (
-                <svg
-                  className="h-7 w-7"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 7.5h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"
+    <motion.div
+      className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+    >
+      {services.map((service, index) => {
+        const FallbackIcon = fallbackIcons[index % fallbackIcons.length];
+        const hasIconImage = service.iconImage?.asset && isSanityConfigured;
+
+        return (
+          <motion.div key={service.slug} variants={cardVariants}>
+            <Link
+              href={`/services/${service.slug}`}
+              className="group flex h-full flex-col rounded-xl bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
+            >
+              {/* Icon */}
+              <div className="mb-4 flex h-[200px] w-[200px] items-center justify-center self-center overflow-hidden rounded-lg">
+                {hasIconImage ? (
+                  <Image
+                    src={urlFor(service.iconImage!).width(200).height(200).fit("crop").url()}
+                    alt={service.iconImage!.alt || service.title}
+                    width={200}
+                    height={200}
+                    className="object-cover"
                   />
-                </svg>
-              )}
-            </div>
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-primary/10">
+                    <FallbackIcon className="h-16 w-16 text-primary-dark" />
+                  </div>
+                )}
+              </div>
 
-            <h3 className="font-heading text-lg font-semibold text-charcoal group-hover:text-primary-dark">
-              {service.title}
-            </h3>
+              {/* Title */}
+              <h3 className="font-heading text-lg font-bold text-charcoal group-hover:text-primary-dark">
+                {service.title}
+              </h3>
 
-            <p className="mt-2 text-sm leading-relaxed text-charcoal/70">
-              {service.shortDescription}
-            </p>
+              {/* Description */}
+              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-600">
+                {service.shortDescription}
+              </p>
 
-            <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary-dark transition-colors group-hover:text-accent-coral">
-              Learn More
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </span>
-          </Card>
-        </AnimatedSection>
-      ))}
-    </div>
+              {/* Learn More link */}
+              <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-medium text-[#4ecbcc] transition-colors group-hover:text-[#3ba8a9]">
+                Learn More &rarr;
+              </span>
+            </Link>
+          </motion.div>
+        );
+      })}
+    </motion.div>
   );
 }

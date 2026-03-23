@@ -38,9 +38,11 @@ export default async function HomePage() {
       }>(homepageQuery),
       sanityFetch<
         {
+          _id: string;
           title: string;
           slug: { current: string };
           shortDescription: string;
+          iconImage?: { asset: unknown; alt?: string };
         }[]
       >(allServicesQuery),
       sanityFetch<
@@ -64,6 +66,7 @@ export default async function HomePage() {
         title: s.title,
         slug: s.slug.current,
         shortDescription: s.shortDescription,
+        iconImage: s.iconImage,
       }))
     : seedServices.map((s) => ({
         title: s.title,
@@ -136,11 +139,11 @@ export default async function HomePage() {
       </section>
 
       {/* ── Services Overview ── */}
-      <section className="bg-off-white py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="bg-[#F8F9FA] py-20 px-6">
+        <div className="mx-auto max-w-7xl">
           <SectionHeading
-            title="Our Services"
-            subtitle="Comprehensive engineering solutions across four core disciplines"
+            title="Our Core Services"
+            subtitle="Specialized engineering solutions across four disciplines"
           />
           <div className="mt-12">
             <ServicesGrid services={services} />
