@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
+import { siteSettingsQuery } from '@/lib/queries';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -43,11 +45,28 @@ const jsonLd = {
   sameAs: [],
 };
 
-export default function RootLayout({
+interface SiteSettings {
+  siteTitle?: string;
+  logo?: { asset: { _ref: string } };
+  tagline?: string;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let logoUrl: string | null = null;
+  if (isSanityConfigured) {
+    const settings = await sanityFetch<SiteSettings>(siteSettingsQuery);
+    if (settings?.logo) {
+      try {
+        logoUrl = urlFor(settings.logo).width(320).url();
+      } catch {
+        // Logo not available, fall back to text
+      }
+    }
+  }
   return (
     <html lang="en" className="h-full antialiased">
       <head>
@@ -70,7 +89,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-body text-charcoal bg-white">
-        <Header />
+        <Header logoUrl={logoUrl} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
