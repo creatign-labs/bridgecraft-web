@@ -13,6 +13,11 @@ export const metadata: Metadata = {
     'Explore our portfolio of bridge, highway, building, and industrial infrastructure projects across India.',
 };
 
+interface SanityImage {
+  asset: unknown;
+  alt?: string;
+}
+
 export default async function ProjectsPage() {
   const sanityProjects = await sanityFetch<
     {
@@ -22,6 +27,8 @@ export default async function ProjectsPage() {
       client: string;
       location: string;
       keyHighlights?: string[];
+      coverImage?: SanityImage;
+      images?: SanityImage[];
     }[]
   >(allProjectsQuery);
 
@@ -33,6 +40,8 @@ export default async function ProjectsPage() {
         client: p.client,
         location: p.location,
         keyHighlights: p.keyHighlights ?? [],
+        coverImage: p.coverImage,
+        images: p.images,
       }))
     : seedProjects;
 

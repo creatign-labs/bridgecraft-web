@@ -22,6 +22,9 @@ export default defineType({
       title: 'Photo',
       type: 'image',
       options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
     }),
     defineField({
       name: 'bio',

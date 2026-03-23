@@ -54,9 +54,11 @@ export default async function HomePage() {
           location: string;
           description: string;
           keyHighlights?: string[];
+          coverImage?: { asset: unknown; alt?: string };
+          images?: { asset: unknown; alt?: string }[];
         }[]
       >(featuredProjectsQuery),
-      sanityFetch<{ _id: string; name: string; logo?: string }[]>(
+      sanityFetch<{ _id: string; name: string; logo?: { asset: unknown; alt?: string } }[]>(
         allClientsQuery,
       ),
     ]);
@@ -82,6 +84,8 @@ export default async function HomePage() {
         client: p.client,
         location: p.location,
         keyHighlights: p.keyHighlights ?? [],
+        coverImage: p.coverImage,
+        images: p.images,
       }))
     : seedProjects
         .filter((p) => p.featured)
@@ -96,7 +100,7 @@ export default async function HomePage() {
         }));
 
   const clients = sanityClients
-    ? sanityClients.map((c) => ({ _id: c._id, name: c.name, order: 0 }))
+    ? sanityClients.map((c) => ({ _id: c._id, name: c.name, logo: c.logo, order: 0 }))
     : seedClients;
 
   const introText = homepageData?.introText ?? companyInfo.introText;

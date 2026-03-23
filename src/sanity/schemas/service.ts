@@ -40,6 +40,16 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'cardImage',
+      title: 'Card Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+      description: 'Rectangular image for services landing page cards (600x400)',
+    }),
+    defineField({
       name: 'iconImage',
       title: 'Service Icon',
       type: 'image',

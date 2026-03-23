@@ -14,15 +14,21 @@ export const metadata: Metadata = {
     'BridgeCraft Engineers is trusted by premier government agencies, construction firms, and private sector developers across India.',
 };
 
+interface SanityImage {
+  asset: unknown;
+  alt?: string;
+}
+
 export default async function ClientsPage() {
   const sanityClients = await sanityFetch<
-    { _id: string; name: string; logo?: string }[]
+    { _id: string; name: string; logo?: SanityImage }[]
   >(allClientsQuery);
 
   const clients = sanityClients
     ? sanityClients.map((c) => ({
         _id: c._id,
         name: c.name,
+        logo: c.logo,
         order: 0,
       }))
     : seedClients;

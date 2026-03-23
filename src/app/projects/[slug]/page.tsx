@@ -3,12 +3,18 @@ import { notFound } from 'next/navigation';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import Button from '@/components/ui/Button';
+import ProjectGallery from './ProjectGallery';
 import { MapPin, Building2, Landmark, FileText } from 'lucide-react';
 import { sanityFetch } from '@/lib/sanity';
 import { projectBySlugQuery, allProjectsQuery } from '@/lib/queries';
 import { projects as seedProjects } from '@/lib/seed-data';
 
 export const revalidate = 60;
+
+interface SanityImage {
+  asset: unknown;
+  alt?: string;
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -63,11 +69,14 @@ export default async function ProjectPage({ params }: Props) {
     scope: string;
     description: string;
     keyHighlights: string[];
-    heroImage?: { asset: unknown; alt?: string };
+    coverImage?: SanityImage;
+    heroImage?: SanityImage;
+    images?: SanityImage[];
     sector?: { name: string };
   }>(projectBySlugQuery, { slug });
 
-  const heroImage = sanityProject?.heroImage;
+  const heroImage = sanityProject?.heroImage ?? sanityProject?.coverImage;
+  const galleryImages = sanityProject?.images ?? [];
   const project = sanityProject
     ? {
         title: sanityProject.title,
@@ -165,6 +174,19 @@ export default async function ProjectPage({ params }: Props) {
               </AnimatedSection>
             </div>
           </div>
+
+          {/* Image Gallery */}
+          {galleryImages.length > 0 && (
+            <AnimatedSection delay={0.2} className="mt-16">
+              <h2 className="font-heading text-2xl font-bold text-charcoal">
+                Project Gallery
+              </h2>
+              <div className="mt-3 h-1 w-12 rounded-full bg-primary" />
+              <div className="mt-8">
+                <ProjectGallery images={galleryImages} projectTitle={project.title} />
+              </div>
+            </AnimatedSection>
+          )}
         </div>
       </section>
     </>

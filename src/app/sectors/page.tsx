@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import {
   Route,
   Landmark,
-  Zap,
+  Sun,
   Train,
   GraduationCap,
   Building2,
   Factory,
 } from 'lucide-react';
-import { sanityFetch } from '@/lib/sanity';
+import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { allSectorsQuery } from '@/lib/queries';
 import { sectors as seedSectors } from '@/lib/seed-data';
 
@@ -25,12 +26,18 @@ export const metadata: Metadata = {
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Route,
   Landmark,
-  Zap,
+  Sun,
+  Zap: Sun,
   Train,
   GraduationCap,
   Building2,
   Factory,
 };
+
+interface SanityImage {
+  asset: unknown;
+  alt?: string;
+}
 
 export default async function SectorsPage() {
   const sanitySectors = await sanityFetch<
@@ -39,6 +46,7 @@ export default async function SectorsPage() {
       name: string;
       slug: { current: string };
       description: string;
+      image?: SanityImage;
       icon: string;
     }[]
   >(allSectorsQuery);
@@ -48,9 +56,13 @@ export default async function SectorsPage() {
         name: s.name,
         slug: s.slug?.current ?? s.name.toLowerCase().replace(/\s+/g, '-'),
         description: s.description,
+        image: s.image,
         icon: s.icon,
       }))
-    : seedSectors;
+    : seedSectors.map((s) => ({
+        ...s,
+        image: undefined as SanityImage | undefined,
+      }));
 
   return (
     <>
@@ -64,18 +76,37 @@ export default async function SectorsPage() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {sectors.map((sector, index) => {
               const Icon = iconMap[sector.icon] || Building2;
+              const hasImage = sector.image?.asset && isSanityConfigured;
+
               return (
                 <AnimatedSection key={sector.slug} delay={index * 0.08}>
-                  <div className="group flex h-full flex-col items-center rounded-lg bg-white p-8 text-center shadow transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20">
-                      <Icon className="h-8 w-8 text-primary-dark" />
+                  <div className="group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    {/* Image or gradient fallback */}
+                    <div className="relative h-40 w-full overflow-hidden">
+                      {hasImage ? (
+                        <Image
+                          src={urlFor(sector.image!).width(600).height(400).fit('crop').url()}
+                          alt={sector.image!.alt || `${sector.name} - Bridge Craft Engineers`}
+                          width={600}
+                          height={400}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                          <Icon className="h-12 w-12 text-primary-dark/40" />
+                        </div>
+                      )}
                     </div>
-                    <h3 className="mt-5 font-heading text-lg font-semibold text-charcoal">
-                      {sector.name}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-charcoal/70">
-                      {sector.description}
-                    </p>
+
+                    <div className="flex flex-1 flex-col items-center p-6 text-center">
+                      <h3 className="font-heading text-lg font-semibold text-charcoal">
+                        {sector.name}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-charcoal/70">
+                        {sector.description}
+                      </p>
+                    </div>
                   </div>
                 </AnimatedSection>
               );

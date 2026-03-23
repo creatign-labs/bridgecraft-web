@@ -47,7 +47,8 @@ const jsonLd = {
 
 interface SiteSettings {
   siteTitle?: string;
-  logo?: { asset: { _ref: string } };
+  logo?: { asset: unknown; alt?: string };
+  ogImage?: { asset: unknown; alt?: string };
   tagline?: string;
 }
 

@@ -15,6 +15,18 @@ export default defineType({
       name: 'logo',
       title: 'Logo',
       type: 'image',
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Default Open Graph Image',
+      type: 'image',
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+      description: 'Default social sharing image (1200x630)',
     }),
     defineField({
       name: 'tagline',

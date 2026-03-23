@@ -25,10 +25,20 @@ export default defineType({
       rows: 3,
     }),
     defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+      description: 'Card thumbnail image (600x400)',
+    }),
+    defineField({
       name: 'icon',
       title: 'Icon',
       type: 'string',
-      description: 'Icon identifier (e.g., Lucide icon name)',
+      description: 'Fallback icon identifier (e.g., Lucide icon name)',
     }),
   ],
   preview: {

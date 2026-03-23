@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import { ArrowRight } from 'lucide-react';
-import { sanityFetch } from '@/lib/sanity';
+import { ArrowRight, ClipboardCheck, Building2, Layers, Radio } from 'lucide-react';
+import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { allServicesQuery } from '@/lib/queries';
 import { services as seedServices } from '@/lib/seed-data';
 
@@ -15,6 +16,13 @@ export const metadata: Metadata = {
     'BridgeCraft Engineers offers structural engineering, bridge engineering, transportation engineering, and project management consultancy services.',
 };
 
+const fallbackIcons = [ClipboardCheck, Building2, Layers, Radio];
+
+interface SanityImage {
+  asset: unknown;
+  alt?: string;
+}
+
 export default async function ServicesPage() {
   const sanityServices = await sanityFetch<
     {
@@ -22,6 +30,7 @@ export default async function ServicesPage() {
       title: string;
       slug: { current: string };
       shortDescription: string;
+      cardImage?: SanityImage;
     }[]
   >(allServicesQuery);
 
@@ -30,11 +39,13 @@ export default async function ServicesPage() {
         title: s.title,
         slug: s.slug.current,
         shortDescription: s.shortDescription,
+        cardImage: s.cardImage,
       }))
     : seedServices.map((s) => ({
         title: s.title,
         slug: s.slug,
         shortDescription: s.shortDescription,
+        cardImage: undefined as SanityImage | undefined,
       }));
 
   return (
@@ -47,33 +58,52 @@ export default async function ServicesPage() {
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            {services.map((service, index) => (
-              <AnimatedSection key={service.slug} delay={index * 0.1}>
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="group flex h-full flex-col rounded-lg bg-white p-8 shadow transition-shadow duration-300 hover:shadow-lg"
-                >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-                    <span className="font-heading text-xl font-bold text-primary-dark">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                  </div>
+            {services.map((service, index) => {
+              const FallbackIcon = fallbackIcons[index % fallbackIcons.length];
+              const hasImage = service.cardImage?.asset && isSanityConfigured;
 
-                  <h2 className="mt-5 font-heading text-xl font-bold text-charcoal group-hover:text-primary-dark">
-                    {service.title}
-                  </h2>
+              return (
+                <AnimatedSection key={service.slug} delay={index * 0.1}>
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className="group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow transition-shadow duration-300 hover:shadow-lg"
+                  >
+                    {/* Card image */}
+                    <div className="relative h-48 w-full overflow-hidden">
+                      {hasImage ? (
+                        <Image
+                          src={urlFor(service.cardImage!).width(600).height(400).fit('crop').url()}
+                          alt={service.cardImage!.alt || `${service.title} - Bridge Craft Engineers`}
+                          width={600}
+                          height={400}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#F8F9FA] to-white">
+                          <FallbackIcon className="h-16 w-16 text-primary-dark/30" />
+                        </div>
+                      )}
+                    </div>
 
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-charcoal/70">
-                    {service.shortDescription}
-                  </p>
+                    <div className="flex flex-1 flex-col p-8">
+                      <h2 className="font-heading text-xl font-bold text-charcoal group-hover:text-primary-dark">
+                        {service.title}
+                      </h2>
 
-                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary-dark transition-colors group-hover:text-accent-coral">
-                    Learn More
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </Link>
-              </AnimatedSection>
-            ))}
+                      <p className="mt-3 flex-1 text-sm leading-relaxed text-charcoal/70">
+                        {service.shortDescription}
+                      </p>
+
+                      <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary-dark transition-colors group-hover:text-accent-coral">
+                        Learn More
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </span>
+                    </div>
+                  </Link>
+                </AnimatedSection>
+              );
+            })}
           </div>
         </div>
       </section>

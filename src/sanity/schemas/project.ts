@@ -52,6 +52,16 @@ export default defineType({
       of: [{ type: 'string' }],
     }),
     defineField({
+      name: 'coverImage',
+      title: 'Cover Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+      description: 'Dedicated hero/cover image, separate from gallery',
+    }),
+    defineField({
       name: 'heroImage',
       title: 'Hero Banner Image',
       type: 'image',
@@ -62,12 +72,15 @@ export default defineType({
     }),
     defineField({
       name: 'images',
-      title: 'Images',
+      title: 'Gallery Images',
       type: 'array',
       of: [
         {
           type: 'image',
           options: { hotspot: true },
+          fields: [
+            { name: 'alt', title: 'Alt Text', type: 'string' },
+          ],
         },
       ],
     }),

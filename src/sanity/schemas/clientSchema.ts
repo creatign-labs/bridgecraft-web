@@ -15,6 +15,9 @@ export default defineType({
       name: 'logo',
       title: 'Logo',
       type: 'image',
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
     }),
     defineField({
       name: 'websiteUrl',

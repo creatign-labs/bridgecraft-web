@@ -18,7 +18,7 @@ export const aboutIntroductionQuery = groq`
   *[_type == "aboutIntroduction"][0] {
     heroImage { asset->, alt },
     content,
-    image
+    image { asset->, alt }
   }
 `;
 
@@ -53,7 +53,7 @@ export const teamMembersQuery = groq`
     _id,
     name,
     designation,
-    photo,
+    photo { asset->, alt },
     bio,
     order
   }
@@ -66,6 +66,7 @@ export const allServicesQuery = groq`
     title,
     slug,
     shortDescription,
+    cardImage { asset->, alt },
     iconImage { asset->, alt },
     icon,
     keyCapabilities
@@ -81,6 +82,7 @@ export const serviceBySlugQuery = groq`
     shortDescription,
     fullDescription,
     heroImage { asset->, alt },
+    cardImage { asset->, alt },
     icon,
     keyCapabilities
   }
@@ -95,7 +97,9 @@ export const allProjectsQuery = groq`
     client,
     location,
     description,
-    images,
+    keyHighlights,
+    coverImage { asset->, alt },
+    images[] { asset->, alt },
     featured,
     sector-> { name, slug }
   }
@@ -113,8 +117,9 @@ export const projectBySlugQuery = groq`
     scope,
     description,
     keyHighlights,
+    coverImage { asset->, alt },
     heroImage { asset->, alt },
-    images,
+    images[] { asset->, alt },
     featured,
     sector-> { name, slug }
   }
@@ -129,7 +134,8 @@ export const featuredProjectsQuery = groq`
     client,
     location,
     description,
-    images,
+    coverImage { asset->, alt },
+    images[] { asset->, alt },
     sector-> { name, slug }
   }
 `;
@@ -141,6 +147,7 @@ export const allSectorsQuery = groq`
     name,
     slug,
     description,
+    image { asset->, alt },
     icon
   }
 `;
@@ -150,7 +157,7 @@ export const allClientsQuery = groq`
   *[_type == "client"] | order(order asc) {
     _id,
     name,
-    logo,
+    logo { asset->, alt },
     websiteUrl,
     order
   }
@@ -208,7 +215,8 @@ export const contactInfoQuery = groq`
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0] {
     siteTitle,
-    logo,
+    logo { asset->, alt },
+    ogImage { asset->, alt },
     tagline,
     socialLinks[] { platform, url }
   }
