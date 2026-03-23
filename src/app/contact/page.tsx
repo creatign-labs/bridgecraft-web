@@ -14,6 +14,7 @@ export const metadata = {
 
 export default async function ContactPage() {
   const sanityContact = await sanityFetch<{
+    heroImage?: { asset: unknown; alt?: string };
     address: string;
     phone: string;
     email: string;
@@ -30,6 +31,7 @@ export default async function ContactPage() {
       <PageHero
         title="Contact Us"
         subtitle="We would love to hear about your project"
+        image={sanityContact?.heroImage}
       />
 
       <ContactClient contactInfo={contactInfo} />

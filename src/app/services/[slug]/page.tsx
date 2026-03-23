@@ -59,9 +59,11 @@ export default async function ServicePage({ params }: Props) {
     slug: { current: string };
     shortDescription: string;
     fullDescription: string;
+    heroImage?: { asset: unknown; alt?: string };
     keyCapabilities: string[];
   }>(serviceBySlugQuery, { slug });
 
+  const heroImage = sanityService?.heroImage;
   const service = sanityService
     ? {
         title: sanityService.title,
@@ -77,7 +79,7 @@ export default async function ServicePage({ params }: Props) {
 
   return (
     <>
-      <PageHero title={service.title} subtitle={service.shortDescription} />
+      <PageHero title={service.title} subtitle={service.shortDescription} image={heroImage} />
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

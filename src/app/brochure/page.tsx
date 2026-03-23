@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 
 export default async function BrochurePage() {
   const data = await sanityFetch<{
+    heroImage?: { asset: unknown; alt?: string };
     title: string;
     description: string;
     fileUrl: string;
@@ -32,6 +33,7 @@ export default async function BrochurePage() {
       <PageHero
         title="Company Brochure"
         subtitle="A comprehensive overview of our capabilities and experience"
+        image={data?.heroImage}
       />
 
       <section className="py-20 sm:py-24">

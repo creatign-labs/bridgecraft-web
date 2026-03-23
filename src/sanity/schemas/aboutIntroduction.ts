@@ -13,6 +13,15 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'heroImage',
+      title: 'Hero Banner Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+    }),
+    defineField({
       name: 'image',
       title: 'Featured Image',
       type: 'image',

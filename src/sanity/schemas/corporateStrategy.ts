@@ -6,6 +6,15 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'heroImage',
+      title: 'Hero Banner Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+    }),
+    defineField({
       name: 'pillars',
       title: 'Strategic Pillars',
       type: 'array',

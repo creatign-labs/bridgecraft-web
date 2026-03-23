@@ -24,8 +24,11 @@ export default async function CareersPage() {
       description: string;
       requirements?: string[];
       isActive?: boolean;
+      heroImage?: { asset: unknown; alt?: string };
     }[]
   >(allJobOpeningsQuery);
+
+  const careersHeroImage = sanityJobs?.find((j) => j.heroImage?.asset)?.heroImage;
 
   const jobOpenings = sanityJobs
     ? sanityJobs
@@ -46,6 +49,7 @@ export default async function CareersPage() {
       <PageHero
         title="Careers"
         subtitle="Join our team of passionate engineers and consultants"
+        image={careersHeroImage}
       />
 
       <section className="py-20 sm:py-24">

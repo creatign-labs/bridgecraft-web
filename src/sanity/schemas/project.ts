@@ -52,6 +52,15 @@ export default defineType({
       of: [{ type: 'string' }],
     }),
     defineField({
+      name: 'heroImage',
+      title: 'Hero Banner Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+    }),
+    defineField({
       name: 'images',
       title: 'Images',
       type: 'array',

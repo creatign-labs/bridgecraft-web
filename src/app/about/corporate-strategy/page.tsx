@@ -9,6 +9,7 @@ export const revalidate = 60;
 
 export default async function CorporateStrategyPage() {
   const data = await sanityFetch<{
+    heroImage?: { asset: unknown; alt?: string };
     pillars: { title: string; description: string; bulletPoints?: string[] }[];
   }>(corporateStrategyQuery);
 
@@ -25,6 +26,7 @@ export default async function CorporateStrategyPage() {
       <PageHero
         title="Corporate Strategy"
         subtitle="Four pillars that guide our growth and delivery"
+        image={data?.heroImage}
       />
 
       <section className="py-20 sm:py-24">

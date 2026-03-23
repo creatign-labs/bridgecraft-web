@@ -1,32 +1,61 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { urlFor } from "@/lib/sanity";
+
+interface SanityImage {
+  asset: unknown;
+  alt?: string;
+}
 
 interface PageHeroProps {
   title: string;
   subtitle?: string;
-  backgroundImage?: string;
+  image?: SanityImage;
 }
 
-export default function PageHero({
-  title,
-  subtitle,
-  backgroundImage,
-}: PageHeroProps) {
+export default function PageHero({ title, subtitle, image }: PageHeroProps) {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  const hasImage = image?.asset;
+
   return (
     <section
-      className="relative flex min-h-[300px] items-center justify-center bg-slate-dark bg-cover bg-center"
-      style={
-        backgroundImage
-          ? { backgroundImage: `url(${backgroundImage})` }
-          : undefined
-      }
+      ref={ref}
+      className="relative flex min-h-[300px] items-center justify-center overflow-hidden"
     >
-      {/* Dark overlay */}
-      {backgroundImage && (
-        <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
+      {/* Background: Sanity image or gradient fallback */}
+      {hasImage ? (
+        <>
+          <motion.div className="absolute inset-0" style={{ y }}>
+            <Image
+              src={urlFor(image).width(1920).height(600).fit("crop").url()}
+              alt={image.alt || "Bridge Craft Engineers"}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+          </motion.div>
+          <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+        </>
+      ) : (
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(135deg, #1a1a2e 0%, #4ecbcc 100%)",
+          }}
+        />
       )}
 
+      {/* Content */}
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

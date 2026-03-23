@@ -5,7 +5,7 @@ export const homepageQuery = groq`
   *[_type == "homepage"][0] {
     heroHeading,
     heroSubheading,
-    heroImage,
+    heroImage { asset->, alt },
     introText,
     stats[] { label, value },
     ctaText,
@@ -16,6 +16,7 @@ export const homepageQuery = groq`
 // About - Introduction (singleton)
 export const aboutIntroductionQuery = groq`
   *[_type == "aboutIntroduction"][0] {
+    heroImage { asset->, alt },
     content,
     image
   }
@@ -24,6 +25,7 @@ export const aboutIntroductionQuery = groq`
 // Vision & Values (singleton)
 export const visionValuesQuery = groq`
   *[_type == "visionValues"][0] {
+    heroImage { asset->, alt },
     visionText,
     values[] { title, description, icon }
   }
@@ -32,6 +34,7 @@ export const visionValuesQuery = groq`
 // Mission Statement (singleton)
 export const missionStatementQuery = groq`
   *[_type == "missionStatement"][0] {
+    heroImage { asset->, alt },
     content
   }
 `;
@@ -39,6 +42,7 @@ export const missionStatementQuery = groq`
 // Corporate Strategy (singleton)
 export const corporateStrategyQuery = groq`
   *[_type == "corporateStrategy"][0] {
+    heroImage { asset->, alt },
     pillars[] { title, description, bulletPoints }
   }
 `;
@@ -75,6 +79,7 @@ export const serviceBySlugQuery = groq`
     slug,
     shortDescription,
     fullDescription,
+    heroImage { asset->, alt },
     icon,
     keyCapabilities
   }
@@ -107,6 +112,7 @@ export const projectBySlugQuery = groq`
     scope,
     description,
     keyHighlights,
+    heroImage { asset->, alt },
     images,
     featured,
     sector-> { name, slug }
@@ -152,6 +158,7 @@ export const allClientsQuery = groq`
 // Brochure (singleton)
 export const brochureQuery = groq`
   *[_type == "brochure"][0] {
+    heroImage { asset->, alt },
     title,
     description,
     "fileUrl": file.asset->url
@@ -166,7 +173,8 @@ export const activeJobOpeningsQuery = groq`
     department,
     location,
     type,
-    description
+    description,
+    heroImage { asset->, alt }
   }
 `;
 
@@ -178,13 +186,15 @@ export const allJobOpeningsQuery = groq`
     location,
     type,
     description,
-    isActive
+    isActive,
+    heroImage { asset->, alt }
   }
 `;
 
 // Contact Info (singleton)
 export const contactInfoQuery = groq`
   *[_type == "contactInfo"][0] {
+    heroImage { asset->, alt },
     address,
     phone,
     email,

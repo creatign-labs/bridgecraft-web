@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutIntroductionPage() {
-  const data = await sanityFetch<{ content: unknown; image: unknown }>(
+  const data = await sanityFetch<{ heroImage?: { asset: unknown; alt?: string }; content: unknown; image: unknown }>(
     aboutIntroductionQuery,
   );
 
@@ -27,6 +27,7 @@ export default async function AboutIntroductionPage() {
       <PageHero
         title="About Us"
         subtitle="Engineering excellence rooted in integrity and innovation"
+        image={data?.heroImage}
       />
 
       <section className="py-20 sm:py-24">

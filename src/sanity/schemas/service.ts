@@ -31,6 +31,15 @@ export default defineType({
       of: [{ type: 'block' }],
     }),
     defineField({
+      name: 'heroImage',
+      title: 'Hero Banner Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Alt Text', type: 'string' },
+      ],
+    }),
+    defineField({
       name: 'icon',
       title: 'Icon',
       type: 'string',

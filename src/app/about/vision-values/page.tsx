@@ -64,6 +64,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export default async function VisionValuesPage() {
   const data = await sanityFetch<{
+    heroImage?: { asset: unknown; alt?: string };
     visionText: string;
     values: { title: string; description: string; icon: string }[];
   }>(visionValuesQuery);
@@ -82,6 +83,7 @@ export default async function VisionValuesPage() {
       <PageHero
         title="Our Vision & Values"
         subtitle="The principles that guide everything we do"
+        image={data?.heroImage}
       />
 
       <section className="py-20 sm:py-24">

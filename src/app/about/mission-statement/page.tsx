@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function MissionStatementPage() {
-  const data = await sanityFetch<{ content: string }>(missionStatementQuery);
+  const data = await sanityFetch<{ heroImage?: { asset: unknown; alt?: string }; content: string }>(missionStatementQuery);
 
   const missionStatement = data?.content ?? companyInfo.missionStatement;
 
@@ -23,6 +23,7 @@ export default async function MissionStatementPage() {
       <PageHero
         title="Mission Statement"
         subtitle="Our purpose and commitment to the built environment"
+        image={data?.heroImage}
       />
 
       <section className="py-20 sm:py-24">

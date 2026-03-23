@@ -63,9 +63,11 @@ export default async function ProjectPage({ params }: Props) {
     scope: string;
     description: string;
     keyHighlights: string[];
+    heroImage?: { asset: unknown; alt?: string };
     sector?: { name: string };
   }>(projectBySlugQuery, { slug });
 
+  const heroImage = sanityProject?.heroImage;
   const project = sanityProject
     ? {
         title: sanityProject.title,
@@ -92,7 +94,7 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <>
-      <PageHero title={project.title} subtitle={project.sector} />
+      <PageHero title={project.title} subtitle={project.sector} image={heroImage} />
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

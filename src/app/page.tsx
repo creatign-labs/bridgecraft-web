@@ -6,6 +6,7 @@ import ServicesGrid from '@/components/sections/ServicesGrid';
 import ProjectsGrid from '@/components/sections/ProjectsGrid';
 import ClientsBar from '@/components/sections/ClientsBar';
 import CTABanner from '@/components/sections/CTABanner';
+import HomeHero from '@/components/sections/HomeHero';
 import { sanityFetch } from '@/lib/sanity';
 import {
   homepageQuery,
@@ -29,6 +30,7 @@ export default async function HomePage() {
       sanityFetch<{
         heroHeading: string;
         heroSubheading: string;
+        heroImage?: { asset: unknown; alt?: string };
         introText: string;
         stats: { label: string; value: number; suffix?: string }[];
         ctaText: string;
@@ -105,46 +107,11 @@ export default async function HomePage() {
   return (
     <>
       {/* ── Hero Section ── */}
-      <section className="relative flex min-h-[85vh] items-center bg-slate-dark">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-dark via-slate-dark to-primary-dark/20" />
-
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-              Engineering Excellence Since 2015
-            </p>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.1}>
-            <h1 className="mt-4 max-w-3xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
-              {homepageData?.heroHeading ?? (
-                <>
-                  Engineering Structures{' '}
-                  <span className="text-primary">with Responsibility</span>
-                </>
-              )}
-            </h1>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.2}>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
-              {homepageData?.heroSubheading ??
-                'BridgeCraft Engineers & Consultants delivers safe, sustainable, and innovative infrastructure solutions — from bridges and highways to buildings and industrial facilities.'}
-            </p>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.3}>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Button href="/services" variant="primary" size="lg">
-                Our Services
-              </Button>
-              <Button href="/contact" variant="secondary" size="lg">
-                Get in Touch
-              </Button>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+      <HomeHero
+        heading={homepageData?.heroHeading}
+        subheading={homepageData?.heroSubheading}
+        heroImage={homepageData?.heroImage}
+      />
 
       {/* ── Introduction ── */}
       <section className="py-20 sm:py-24">
