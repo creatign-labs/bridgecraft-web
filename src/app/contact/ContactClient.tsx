@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import { MapPin, Phone, Mail, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, Loader2 } from 'lucide-react';
 
 interface ContactInfo {
   address: string;
@@ -32,7 +32,8 @@ export default function ContactClient({
   contactInfo: ContactInfo;
 }) {
   const [form, setForm] = useState<FormState>(initialFormState);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -40,11 +41,31 @@ export default function ContactClient({
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Contact form submitted:', form);
-    setSubmitted(true);
-    setForm(initialFormState);
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || 'Something went wrong. Please try again.');
+      }
+
+      setStatus('success');
+      setForm(initialFormState);
+    } catch (err) {
+      setStatus('error');
+      setErrorMessage(
+        err instanceof Error ? err.message : 'Something went wrong. Please try again.',
+      );
+    }
   };
 
   const contactDetails = [
@@ -68,13 +89,13 @@ export default function ContactClient({
   ];
 
   const inputClasses =
-    'block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary';
+    'w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#7bfbfc] focus:border-transparent outline-none transition text-sm text-charcoal placeholder:text-charcoal/40';
 
   return (
     <section className="py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-5">
-          {/* Contact Form */}
+          {/* Contact Form — 60% */}
           <div className="lg:col-span-3">
             <AnimatedSection>
               <h2 className="font-heading text-2xl font-bold text-charcoal">
@@ -82,29 +103,37 @@ export default function ContactClient({
               </h2>
               <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
 
-              {submitted ? (
-                <div className="mt-8 rounded-lg bg-primary/10 p-8 text-center">
-                  <p className="font-heading text-lg font-semibold text-primary-dark">
-                    Thank you for reaching out!
-                  </p>
-                  <p className="mt-2 text-sm text-charcoal/70">
-                    We have received your message and will get back to you
-                    within 1-2 business days.
+              {/* Success banner */}
+              {status === 'success' && (
+                <div className="mt-8 rounded-lg bg-green-50 border border-green-200 p-6 text-center">
+                  <p className="font-heading text-lg font-semibold text-green-800">
+                    Thank you! We&apos;ll get back to you shortly.
                   </p>
                   <button
-                    onClick={() => setSubmitted(false)}
-                    className="mt-4 text-sm font-medium text-primary-dark hover:underline"
+                    onClick={() => setStatus('idle')}
+                    className="mt-3 text-sm font-medium text-green-700 hover:underline"
                   >
                     Send another message
                   </button>
                 </div>
-              ) : (
+              )}
+
+              {/* Error banner */}
+              {status === 'error' && (
+                <div className="mt-6 rounded-lg bg-red-50 border border-red-200 px-4 py-3">
+                  <p className="text-sm text-red-800">
+                    {errorMessage || 'Something went wrong. Please try again.'}
+                  </p>
+                </div>
+              )}
+
+              {status !== 'success' && (
                 <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div>
                       <label
                         htmlFor="name"
-                        className="mb-1.5 block text-sm font-medium text-charcoal"
+                        className="mb-1 block text-sm font-medium text-charcoal"
                       >
                         Full Name <span className="text-accent-coral">*</span>
                       </label>
@@ -122,7 +151,7 @@ export default function ContactClient({
                     <div>
                       <label
                         htmlFor="email"
-                        className="mb-1.5 block text-sm font-medium text-charcoal"
+                        className="mb-1 block text-sm font-medium text-charcoal"
                       >
                         Email Address{' '}
                         <span className="text-accent-coral">*</span>
@@ -144,7 +173,7 @@ export default function ContactClient({
                     <div>
                       <label
                         htmlFor="phone"
-                        className="mb-1.5 block text-sm font-medium text-charcoal"
+                        className="mb-1 block text-sm font-medium text-charcoal"
                       >
                         Phone Number
                       </label>
@@ -161,7 +190,7 @@ export default function ContactClient({
                     <div>
                       <label
                         htmlFor="subject"
-                        className="mb-1.5 block text-sm font-medium text-charcoal"
+                        className="mb-1 block text-sm font-medium text-charcoal"
                       >
                         Subject <span className="text-accent-coral">*</span>
                       </label>
@@ -181,7 +210,7 @@ export default function ContactClient({
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-1.5 block text-sm font-medium text-charcoal"
+                      className="mb-1 block text-sm font-medium text-charcoal"
                     >
                       Message <span className="text-accent-coral">*</span>
                     </label>
@@ -193,23 +222,33 @@ export default function ContactClient({
                       value={form.message}
                       onChange={handleChange}
                       placeholder="Tell us about your project..."
-                      className={inputClasses}
+                      className={`${inputClasses} min-h-[150px]`}
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center gap-2 rounded-md bg-accent-coral px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-coral/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    disabled={status === 'loading'}
+                    className="inline-flex items-center justify-center gap-2 bg-[#eb8380] text-white px-8 py-3 rounded-lg hover:bg-[#d66e6b] transition font-heading font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Send className="h-4 w-4" />
-                    Send Message
+                    {status === 'loading' ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Send Message
+                      </>
+                    )}
                   </button>
                 </form>
               )}
             </AnimatedSection>
           </div>
 
-          {/* Contact Info Sidebar */}
+          {/* Contact Info Sidebar — 40% */}
           <div className="lg:col-span-2">
             <AnimatedSection delay={0.15}>
               <h2 className="font-heading text-2xl font-bold text-charcoal">
@@ -242,17 +281,19 @@ export default function ContactClient({
                 ))}
               </div>
 
-              {/* Map placeholder */}
-              <div className="mt-8 h-64 rounded-lg bg-off-white flex items-center justify-center border border-gray-200">
-                <div className="text-center">
-                  <MapPin className="mx-auto h-8 w-8 text-charcoal/30" />
-                  <p className="mt-2 text-sm text-charcoal/40">
-                    Google Maps embed
-                  </p>
-                  <p className="text-xs text-charcoal/30">
-                    HITEC City, Hyderabad
-                  </p>
-                </div>
+              {/* Google Maps placeholder */}
+              <div className="mt-8 overflow-hidden rounded-lg border border-gray-200">
+                <iframe
+                  title="Office Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.2!2d78.3816!3d17.4435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDI2JzM2LjYiTiA3OMKwMjInNTMuOCJF!5e0!3m2!1sen!2sin!4v1"
+                  width="100%"
+                  height="256"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="bg-off-white"
+                />
               </div>
             </AnimatedSection>
           </div>
