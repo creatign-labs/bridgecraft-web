@@ -7,7 +7,7 @@ export const homepageQuery = groq`
     heroSubheading,
     heroImage { asset->, alt },
     introText,
-    stats[] { label, value },
+    stats[] { label, value, suffix },
     ctaText,
     ctaLink
   }
@@ -194,6 +194,7 @@ export const allJobOpeningsQuery = groq`
     location,
     type,
     description,
+    requirements,
     isActive,
     heroImage { asset->, alt }
   }

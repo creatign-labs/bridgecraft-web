@@ -36,20 +36,20 @@ const NAV_ITEMS: NavItem[] = [
     href: "/services",
     dropdown: [
       {
-        label: "Pre-Construction & Engineering Advisory",
-        href: "/services/pre-construction-engineering-advisory",
-      },
-      {
         label: "Structural Engineering",
         href: "/services/structural-engineering",
       },
       {
-        label: "Geotechnical Engineering",
-        href: "/services/geotechnical-engineering",
+        label: "Bridge Engineering",
+        href: "/services/bridge-engineering",
       },
       {
-        label: "Geophysical Engineering",
-        href: "/services/geophysical-engineering",
+        label: "Transportation Engineering",
+        href: "/services/transportation-engineering",
+      },
+      {
+        label: "Project Management Consultancy",
+        href: "/services/project-management-consultancy",
       },
     ],
   },

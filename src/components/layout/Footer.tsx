@@ -96,27 +96,27 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                 <span className="text-sm text-white/70">
-                  BridgeCraft Engineers HQ,
+                  4th Floor, Meridian Tower,
                   <br />
-                  Engineering District, Lagos, Nigeria
+                  HITEC City, Hyderabad 500081, India
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 shrink-0 text-primary" />
                 <a
-                  href="tel:+2341234567890"
+                  href="tel:+914023123456"
                   className="text-sm text-white/70 transition-colors hover:text-primary"
                 >
-                  +234 123 456 7890
+                  +91 40 2312 3456
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 shrink-0 text-primary" />
                 <a
-                  href="mailto:info@bridgecraft.com"
+                  href="mailto:info@bridgecraft.in"
                   className="text-sm text-white/70 transition-colors hover:text-primary"
                 >
-                  info@bridgecraft.com
+                  info@bridgecraft.in
                 </a>
               </li>
             </ul>
