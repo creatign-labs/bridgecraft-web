@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { createClient } from '@sanity/client';
 import { Resend } from 'resend';
 
 interface ContactPayload {
@@ -10,6 +11,24 @@ interface ContactPayload {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Create a write-capable Sanity client for storing submissions.
+ * Requires SANITY_API_TOKEN with write permissions.
+ */
+function getSanityWriteClient() {
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+  const token = process.env.SANITY_API_TOKEN;
+  if (!projectId || projectId === 'your_project_id' || !token) return null;
+
+  return createClient({
+    projectId,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: '2024-01-01',
+    useCdn: false,
+    token,
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,6 +59,26 @@ export async function POST(request: NextRequest) {
         { error: 'Server configuration error.' },
         { status: 500 },
       );
+    }
+
+    // Store the lead in Sanity (non-blocking — email still sends if this fails)
+    const sanityClient = getSanityWriteClient();
+    if (sanityClient) {
+      try {
+        await sanityClient.create({
+          _type: 'contactSubmission',
+          name: name.trim(),
+          email: email.trim(),
+          phone: body.phone?.trim() || undefined,
+          subject: subject.trim(),
+          message: message.trim(),
+          submittedAt: new Date().toISOString(),
+          status: 'new',
+        });
+      } catch (sanityErr) {
+        // Log but don't block the email from being sent
+        console.error('Failed to store lead in Sanity:', sanityErr);
+      }
     }
 
     const { error } = await resend.emails.send({

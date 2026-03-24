@@ -11,6 +11,7 @@ import clientSchema from './clientSchema';
 import brochure from './brochure';
 import jobOpening from './jobOpening';
 import contactInfo from './contactInfo';
+import contactSubmission from './contactSubmission';
 import siteSettings from './siteSettings';
 
 const schemaTypes = [
@@ -27,6 +28,7 @@ const schemaTypes = [
   brochure,
   jobOpening,
   contactInfo,
+  contactSubmission,
   siteSettings,
 ];
 
