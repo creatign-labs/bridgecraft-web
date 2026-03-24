@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ClipboardCheck, Building2, Layers, Radio } from "lucide-react";
 import { urlFor, isSanityConfigured } from "@/lib/sanity";
 
@@ -38,25 +38,30 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 },
+    transition: { duration: 0.5, ease: "easeOut" },
   },
 };
 
 export default function ServicesGrid({ services }: ServicesGridProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <motion.div
       className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
-      variants={containerVariants}
-      initial="hidden"
+      variants={prefersReducedMotion ? undefined : containerVariants}
+      initial={prefersReducedMotion ? false : "hidden"}
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, amount: 0.2 }}
     >
       {services.map((service, index) => {
         const FallbackIcon = fallbackIcons[index % fallbackIcons.length];
         const hasIconImage = service.iconImage?.asset && isSanityConfigured;
 
         return (
-          <motion.div key={service.slug} variants={cardVariants}>
+          <motion.div
+            key={service.slug}
+            variants={prefersReducedMotion ? undefined : cardVariants}
+          >
             <Link
               href={`/services/${service.slug}`}
               className="group flex h-full flex-col rounded-xl bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"

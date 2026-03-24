@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface SectionHeadingProps {
   title: string;
@@ -13,12 +13,14 @@ export default function SectionHeading({
   subtitle,
   centered = true,
 }: SectionHeadingProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className={centered ? "text-center" : ""}
     >
       <h2 className="font-heading text-3xl font-bold text-charcoal sm:text-4xl">
