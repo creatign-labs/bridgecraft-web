@@ -7,6 +7,7 @@ import { ArrowRight, ClipboardCheck, Building2, Layers, Radio } from 'lucide-rea
 import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { allServicesQuery } from '@/lib/queries';
 import { services as seedServices } from '@/lib/seed-data';
+import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -17,6 +18,13 @@ export const metadata: Metadata = {
 };
 
 const fallbackIcons = [ClipboardCheck, Building2, Layers, Radio];
+
+const serviceImageMap: Record<string, string> = {
+  'structural-engineering': '/images/service-structural.jpg',
+  'bridge-engineering': '/images/service-geotechnical.jpg',
+  'transportation-engineering': '/images/service-preconstruction.jpg',
+  'project-management-consultancy': '/images/service-geophysical.jpg',
+};
 
 interface SanityImage {
   asset: unknown;
@@ -40,12 +48,14 @@ export default async function ServicesPage() {
         slug: s.slug.current,
         shortDescription: s.shortDescription,
         cardImage: s.cardImage,
+        placeholderSrc: undefined as string | undefined,
       }))
     : seedServices.map((s) => ({
         title: s.title,
         slug: s.slug,
         shortDescription: s.shortDescription,
         cardImage: undefined as SanityImage | undefined,
+        placeholderSrc: serviceImageMap[s.slug],
       }));
 
   return (
@@ -53,6 +63,7 @@ export default async function ServicesPage() {
       <PageHero
         title="Our Services"
         subtitle="Comprehensive engineering solutions across four core disciplines"
+        placeholderSrc={heroImages.services}
       />
 
       <section className="py-20 sm:py-24">
@@ -74,6 +85,15 @@ export default async function ServicesPage() {
                         <Image
                           src={urlFor(service.cardImage!).width(600).height(400).fit('crop').url()}
                           alt={service.cardImage!.alt || `${service.title} - Bridge Craft Engineers`}
+                          width={600}
+                          height={400}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : service.placeholderSrc ? (
+                        <Image
+                          src={service.placeholderSrc}
+                          alt={`${service.title} - Bridge Craft Engineers`}
                           width={600}
                           height={400}
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"

@@ -15,12 +15,14 @@ interface HomeHeroProps {
   heading?: string;
   subheading?: string;
   heroImage?: SanityImage;
+  placeholderSrc?: string;
 }
 
 export default function HomeHero({
   heading,
   subheading,
   heroImage,
+  placeholderSrc,
 }: HomeHeroProps) {
   const ref = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -57,6 +59,20 @@ export default function HomeHero({
             <Image
               src={urlFor(heroImage).width(1920).height(600).fit("crop").url()}
               alt={heroImage.alt || "Bridge Craft Engineers"}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+          </motion.div>
+          <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+        </>
+      ) : placeholderSrc ? (
+        <>
+          <motion.div className="absolute inset-0" style={{ y: bgY }}>
+            <Image
+              src={placeholderSrc}
+              alt="Bridge Craft Engineers"
               fill
               className="object-cover"
               priority

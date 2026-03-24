@@ -21,6 +21,7 @@ import {
   stats as seedStats,
   companyInfo,
 } from '@/lib/seed-data';
+import { heroImages, serviceIconImages, getProjectImage } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -69,11 +70,13 @@ export default async function HomePage() {
         slug: s.slug.current,
         shortDescription: s.shortDescription,
         iconImage: s.iconImage,
+        placeholderSrc: undefined as string | undefined,
       }))
     : seedServices.map((s) => ({
         title: s.title,
         slug: s.slug,
         shortDescription: s.shortDescription,
+        placeholderSrc: serviceIconImages[s.slug],
       }));
 
   const featuredProjects = sanityFeaturedProjects
@@ -86,17 +89,19 @@ export default async function HomePage() {
         keyHighlights: p.keyHighlights ?? [],
         coverImage: p.coverImage,
         images: p.images,
+        placeholderSrc: undefined as string | undefined,
       }))
     : seedProjects
         .filter((p) => p.featured)
         .slice(0, 4)
-        .map((p) => ({
+        .map((p, i) => ({
           _id: p._id,
           title: p.title,
           slug: p.slug,
           client: p.client,
           location: p.location,
           keyHighlights: p.keyHighlights,
+          placeholderSrc: getProjectImage(i),
         }));
 
   const clients = sanityClients
@@ -118,6 +123,7 @@ export default async function HomePage() {
         heading={homepageData?.heroHeading}
         subheading={homepageData?.heroSubheading}
         heroImage={homepageData?.heroImage}
+        placeholderSrc={!homepageData?.heroImage ? heroImages.homepage : undefined}
       />
 
       {/* ── Introduction ── */}

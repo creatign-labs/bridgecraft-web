@@ -8,6 +8,7 @@ import { MapPin, Building2, Landmark, FileText } from 'lucide-react';
 import { sanityFetch } from '@/lib/sanity';
 import { projectBySlugQuery, allProjectsQuery } from '@/lib/queries';
 import { projects as seedProjects } from '@/lib/seed-data';
+import { getProjectImage } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -103,7 +104,7 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <>
-      <PageHero title={project.title} subtitle={project.sector} image={heroImage} />
+      <PageHero title={project.title} subtitle={project.sector} image={heroImage} placeholderSrc={!heroImage ? getProjectImage(seedProjects.findIndex((p) => p.slug === slug)) : undefined} />
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

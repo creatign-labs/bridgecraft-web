@@ -17,6 +17,7 @@ interface Project {
   keyHighlights: string[];
   coverImage?: SanityImage;
   images?: SanityImage[];
+  placeholderSrc?: string;
 }
 
 interface ProjectsGridProps {
@@ -42,6 +43,15 @@ export default function ProjectsGrid({ projects }: ProjectsGridProps) {
                   <Image
                     src={urlFor(thumbnail!).width(800).height(500).fit("crop").url()}
                     alt={thumbnail!.alt || `${project.title} - Bridge Craft Engineers`}
+                    width={800}
+                    height={500}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : project.placeholderSrc ? (
+                  <Image
+                    src={project.placeholderSrc}
+                    alt={`${project.title} - Bridge Craft Engineers`}
                     width={800}
                     height={500}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"

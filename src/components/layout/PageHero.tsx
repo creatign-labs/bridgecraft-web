@@ -14,9 +14,10 @@ interface PageHeroProps {
   title: string;
   subtitle?: string;
   image?: SanityImage;
+  placeholderSrc?: string;
 }
 
-export default function PageHero({ title, subtitle, image }: PageHeroProps) {
+export default function PageHero({ title, subtitle, image, placeholderSrc }: PageHeroProps) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -31,13 +32,27 @@ export default function PageHero({ title, subtitle, image }: PageHeroProps) {
       ref={ref}
       className="relative flex min-h-[300px] items-center justify-center overflow-hidden"
     >
-      {/* Background: Sanity image or gradient fallback */}
+      {/* Background: Sanity image, local placeholder, or gradient fallback */}
       {hasImage ? (
         <>
           <motion.div className="absolute inset-0" style={{ y }}>
             <Image
               src={urlFor(image).width(1920).height(600).fit("crop").url()}
               alt={image.alt || "Bridge Craft Engineers"}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+          </motion.div>
+          <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+        </>
+      ) : placeholderSrc ? (
+        <>
+          <motion.div className="absolute inset-0" style={{ y }}>
+            <Image
+              src={placeholderSrc}
+              alt={title}
               fill
               className="object-cover"
               priority

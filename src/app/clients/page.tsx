@@ -5,6 +5,7 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import { sanityFetch } from '@/lib/sanity';
 import { allClientsQuery } from '@/lib/queries';
 import { clients as seedClients } from '@/lib/seed-data';
+import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -38,6 +39,7 @@ export default async function ClientsPage() {
       <PageHero
         title="Our Clients"
         subtitle="Trusted by leading government agencies and private enterprises"
+        placeholderSrc={heroImages.clients}
       />
 
       <section className="py-20 sm:py-24">

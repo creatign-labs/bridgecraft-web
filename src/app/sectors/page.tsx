@@ -14,6 +14,7 @@ import {
 import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { allSectorsQuery } from '@/lib/queries';
 import { sectors as seedSectors } from '@/lib/seed-data';
+import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -69,6 +70,7 @@ export default async function SectorsPage() {
       <PageHero
         title="Sectors We Serve"
         subtitle="Delivering engineering excellence across diverse industries"
+        placeholderSrc={heroImages.sectors}
       />
 
       <section className="py-20 sm:py-24">

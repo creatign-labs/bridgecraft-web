@@ -7,6 +7,7 @@ import { CheckCircle } from 'lucide-react';
 import { sanityFetch } from '@/lib/sanity';
 import { serviceBySlugQuery, allServicesQuery } from '@/lib/queries';
 import { services as seedServices } from '@/lib/seed-data';
+import { serviceImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -79,7 +80,7 @@ export default async function ServicePage({ params }: Props) {
 
   return (
     <>
-      <PageHero title={service.title} subtitle={service.shortDescription} image={heroImage} />
+      <PageHero title={service.title} subtitle={service.shortDescription} image={heroImage} placeholderSrc={!heroImage ? serviceImages[slug] : undefined} />
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -5,6 +5,7 @@ import { Shield, Award, Lightbulb, Leaf, Users, HardHat } from 'lucide-react';
 import { sanityFetch } from '@/lib/sanity';
 import { visionValuesQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
+import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -84,6 +85,7 @@ export default async function VisionValuesPage() {
         title="Our Vision & Values"
         subtitle="The principles that guide everything we do"
         image={data?.heroImage}
+        placeholderSrc={!data?.heroImage ? heroImages['about-vision'] : undefined}
       />
 
       <section className="py-20 sm:py-24">

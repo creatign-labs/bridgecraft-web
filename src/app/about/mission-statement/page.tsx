@@ -4,6 +4,7 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import { sanityFetch } from '@/lib/sanity';
 import { missionStatementQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
+import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -24,6 +25,7 @@ export default async function MissionStatementPage() {
         title="Mission Statement"
         subtitle="Our purpose and commitment to the built environment"
         image={data?.heroImage}
+        placeholderSrc={!data?.heroImage ? heroImages['about-mission'] : undefined}
       />
 
       <section className="py-20 sm:py-24">

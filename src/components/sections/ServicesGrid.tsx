@@ -18,6 +18,7 @@ interface Service {
   slug: string;
   shortDescription: string;
   iconImage?: SanityImage;
+  placeholderSrc?: string;
 }
 
 interface ServicesGridProps {
@@ -72,6 +73,14 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
                   <Image
                     src={urlFor(service.iconImage!).width(200).height(200).fit("crop").url()}
                     alt={service.iconImage!.alt || service.title}
+                    width={200}
+                    height={200}
+                    className="object-cover"
+                  />
+                ) : service.placeholderSrc ? (
+                  <Image
+                    src={service.placeholderSrc}
+                    alt={service.title}
                     width={200}
                     height={200}
                     className="object-cover"

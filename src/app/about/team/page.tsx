@@ -6,6 +6,7 @@ import { User } from 'lucide-react';
 import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { teamMembersQuery } from '@/lib/queries';
 import { teamMembers as seedTeamMembers } from '@/lib/seed-data';
+import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -46,6 +47,7 @@ export default async function TeamPage() {
       <PageHero
         title="Our Team"
         subtitle="Experienced professionals committed to engineering excellence"
+        placeholderSrc={heroImages['about-team']}
       />
 
       <section className="py-20 sm:py-24">
