@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { urlFor } from "@/lib/sanity";
+import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 
 interface SanityImage {
   asset: unknown;
@@ -14,10 +15,9 @@ interface PageHeroProps {
   title: string;
   subtitle?: string;
   image?: SanityImage;
-  placeholderSrc?: string;
 }
 
-export default function PageHero({ title, subtitle, image, placeholderSrc }: PageHeroProps) {
+export default function PageHero({ title, subtitle, image }: PageHeroProps) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -32,7 +32,6 @@ export default function PageHero({ title, subtitle, image, placeholderSrc }: Pag
       ref={ref}
       className="relative flex min-h-[300px] items-center justify-center overflow-hidden"
     >
-      {/* Background: Sanity image, local placeholder, or gradient fallback */}
       {hasImage ? (
         <>
           <motion.div className="absolute inset-0" style={{ y }}>
@@ -47,30 +46,13 @@ export default function PageHero({ title, subtitle, image, placeholderSrc }: Pag
           </motion.div>
           <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
         </>
-      ) : placeholderSrc ? (
-        <>
-          <motion.div className="absolute inset-0" style={{ y }}>
-            <Image
-              src={placeholderSrc}
-              alt={title}
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-          </motion.div>
-          <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
-        </>
       ) : (
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(135deg, #1a1a2e 0%, #4ecbcc 100%)",
-          }}
-        />
+        <>
+          <ImagePlaceholder variant="hero" className="absolute inset-0" />
+          <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+        </>
       )}
 
-      {/* Content */}
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

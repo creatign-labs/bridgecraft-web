@@ -4,7 +4,6 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import { sanityFetch } from '@/lib/sanity';
 import { aboutIntroductionQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
-import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -29,7 +28,6 @@ export default async function AboutIntroductionPage() {
         title="About Us"
         subtitle="Engineering excellence rooted in integrity and innovation"
         image={data?.heroImage}
-        placeholderSrc={!data?.heroImage ? heroImages['about-introduction'] : undefined}
       />
 
       <section className="py-20 sm:py-24">

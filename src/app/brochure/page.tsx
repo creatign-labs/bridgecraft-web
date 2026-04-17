@@ -6,7 +6,6 @@ import { Download, FileText } from 'lucide-react';
 import { sanityFetch } from '@/lib/sanity';
 import { brochureQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
-import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -35,7 +34,6 @@ export default async function BrochurePage() {
         title="Company Brochure"
         subtitle="A comprehensive overview of our capabilities and experience"
         image={data?.heroImage}
-        placeholderSrc={!data?.heroImage ? heroImages.brochure : undefined}
       />
 
       <section className="py-20 sm:py-24">

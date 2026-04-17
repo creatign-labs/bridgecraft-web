@@ -4,7 +4,6 @@ import { sanityFetch } from '@/lib/sanity';
 import { allJobOpeningsQuery } from '@/lib/queries';
 import { jobOpenings as seedJobOpenings } from '@/lib/seed-data';
 import CareersClient from './CareersClient';
-import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -51,7 +50,6 @@ export default async function CareersPage() {
         title="Careers"
         subtitle="Join our team of passionate engineers and consultants"
         image={careersHeroImage}
-        placeholderSrc={!careersHeroImage ? heroImages.careers : undefined}
       />
 
       <section className="py-20 sm:py-24">

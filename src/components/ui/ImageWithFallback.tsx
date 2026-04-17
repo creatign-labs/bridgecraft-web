@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { urlFor, isSanityConfigured } from "@/lib/sanity";
+import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import type { LucideIcon } from "lucide-react";
 
 interface SanityImage {
@@ -26,8 +27,6 @@ export default function ImageWithFallback({
   width,
   height,
   fit = "crop",
-  fallbackIcon: FallbackIcon,
-  fallbackText,
   className = "",
   priority = false,
   sizes,
@@ -49,18 +48,9 @@ export default function ImageWithFallback({
   }
 
   return (
-    <div
-      className={`flex items-center justify-center bg-[#F8F9FA] ${className}`}
-      style={{ width: "100%", aspectRatio: `${width}/${height}` }}
-    >
-      {FallbackIcon && (
-        <FallbackIcon className="h-12 w-12 text-charcoal/30" />
-      )}
-      {fallbackText && !FallbackIcon && (
-        <span className="px-4 text-center font-heading text-sm font-medium text-charcoal/60">
-          {fallbackText}
-        </span>
-      )}
-    </div>
+    <ImagePlaceholder
+      variant="card"
+      className={className}
+    />
   );
 }

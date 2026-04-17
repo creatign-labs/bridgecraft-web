@@ -2,19 +2,10 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import {
-  Route,
-  Landmark,
-  Sun,
-  Train,
-  GraduationCap,
-  Building2,
-  Factory,
-} from 'lucide-react';
+import ImagePlaceholder from '@/components/ui/ImagePlaceholder';
 import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { allSectorsQuery } from '@/lib/queries';
 import { sectors as seedSectors } from '@/lib/seed-data';
-import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -22,17 +13,6 @@ export const metadata: Metadata = {
   title: 'Sectors We Serve',
   description:
     'BridgeCraft Engineers works across infrastructure, government, renewable energy, railways, institutional, commercial, and industrial sectors.',
-};
-
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Route,
-  Landmark,
-  Sun,
-  Zap: Sun,
-  Train,
-  GraduationCap,
-  Building2,
-  Factory,
 };
 
 interface SanityImage {
@@ -70,14 +50,12 @@ export default async function SectorsPage() {
       <PageHero
         title="Sectors We Serve"
         subtitle="Delivering engineering excellence across diverse industries"
-        placeholderSrc={heroImages.sectors}
       />
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {sectors.map((sector, index) => {
-              const Icon = iconMap[sector.icon] || Building2;
               const hasImage = sector.image?.asset && isSanityConfigured;
 
               return (
@@ -95,9 +73,7 @@ export default async function SectorsPage() {
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-                          <Icon className="h-12 w-12 text-primary-dark/40" />
-                        </div>
+                        <ImagePlaceholder variant="card" />
                       )}
                     </div>
 

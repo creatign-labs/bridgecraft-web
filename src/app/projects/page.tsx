@@ -4,7 +4,6 @@ import ProjectsGrid from '@/components/sections/ProjectsGrid';
 import { sanityFetch } from '@/lib/sanity';
 import { allProjectsQuery } from '@/lib/queries';
 import { projects as seedProjects } from '@/lib/seed-data';
-import { heroImages, getProjectImage } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -43,19 +42,14 @@ export default async function ProjectsPage() {
         keyHighlights: p.keyHighlights ?? [],
         coverImage: p.coverImage,
         images: p.images,
-        placeholderSrc: undefined as string | undefined,
       }))
-    : seedProjects.map((p, i) => ({
-        ...p,
-        placeholderSrc: getProjectImage(i),
-      }));
+    : seedProjects.map((p) => ({ ...p }));
 
   return (
     <>
       <PageHero
         title="Our Projects"
         subtitle="A portfolio of landmark infrastructure projects delivered with excellence"
-        placeholderSrc={heroImages.projects}
       />
 
       <section className="py-20 sm:py-24">

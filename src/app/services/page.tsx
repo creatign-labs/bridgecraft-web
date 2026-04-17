@@ -3,11 +3,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import { ArrowRight, ClipboardCheck, Building2, Layers, Radio } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import ImagePlaceholder from '@/components/ui/ImagePlaceholder';
 import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { allServicesQuery } from '@/lib/queries';
 import { services as seedServices } from '@/lib/seed-data';
-import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -15,15 +15,6 @@ export const metadata: Metadata = {
   title: 'Our Services',
   description:
     'BridgeCraft Engineers offers structural engineering, bridge engineering, transportation engineering, and project management consultancy services.',
-};
-
-const fallbackIcons = [ClipboardCheck, Building2, Layers, Radio];
-
-const serviceImageMap: Record<string, string> = {
-  'structural-engineering': '/images/service-structural.jpg',
-  'bridge-engineering': '/images/service-geotechnical.jpg',
-  'transportation-engineering': '/images/service-preconstruction.jpg',
-  'project-management-consultancy': '/images/service-geophysical.jpg',
 };
 
 interface SanityImage {
@@ -48,14 +39,12 @@ export default async function ServicesPage() {
         slug: s.slug.current,
         shortDescription: s.shortDescription,
         cardImage: s.cardImage,
-        placeholderSrc: undefined as string | undefined,
       }))
     : seedServices.map((s) => ({
         title: s.title,
         slug: s.slug,
         shortDescription: s.shortDescription,
         cardImage: undefined as SanityImage | undefined,
-        placeholderSrc: serviceImageMap[s.slug],
       }));
 
   return (
@@ -63,14 +52,12 @@ export default async function ServicesPage() {
       <PageHero
         title="Our Services"
         subtitle="Comprehensive engineering solutions across four core disciplines"
-        placeholderSrc={heroImages.services}
       />
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {services.map((service, index) => {
-              const FallbackIcon = fallbackIcons[index % fallbackIcons.length];
               const hasImage = service.cardImage?.asset && isSanityConfigured;
 
               return (
@@ -90,19 +77,8 @@ export default async function ServicesPage() {
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
-                      ) : service.placeholderSrc ? (
-                        <Image
-                          src={service.placeholderSrc}
-                          alt={`${service.title} - Bridge Craft Engineers`}
-                          width={600}
-                          height={400}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#F8F9FA] to-white">
-                          <FallbackIcon className="h-16 w-16 text-primary-dark/30" />
-                        </div>
+                        <ImagePlaceholder variant="card" />
                       )}
                     </div>
 

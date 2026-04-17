@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { urlFor } from "@/lib/sanity";
+import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 
 interface SanityImage {
   asset: unknown;
@@ -15,14 +16,12 @@ interface HomeHeroProps {
   heading?: string;
   subheading?: string;
   heroImage?: SanityImage;
-  placeholderSrc?: string;
 }
 
 export default function HomeHero({
   heading,
   subheading,
   heroImage,
-  placeholderSrc,
 }: HomeHeroProps) {
   const ref = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -52,7 +51,6 @@ export default function HomeHero({
       ref={ref}
       className="relative flex min-h-[85vh] items-center overflow-hidden"
     >
-      {/* Background */}
       {hasImage ? (
         <>
           <motion.div className="absolute inset-0" style={{ y: bgY }}>
@@ -67,22 +65,11 @@ export default function HomeHero({
           </motion.div>
           <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
         </>
-      ) : placeholderSrc ? (
-        <>
-          <motion.div className="absolute inset-0" style={{ y: bgY }}>
-            <Image
-              src={placeholderSrc}
-              alt="Bridge Craft Engineers"
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-          </motion.div>
-          <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
-        </>
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-dark via-slate-dark to-primary-dark/20" />
+        <>
+          <ImagePlaceholder variant="hero" className="absolute inset-0" />
+          <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+        </>
       )}
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">

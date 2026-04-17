@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-import { Briefcase } from "lucide-react";
+import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import { urlFor, isSanityConfigured } from "@/lib/sanity";
 
 interface SanityImage {
@@ -17,7 +17,6 @@ interface Project {
   keyHighlights: string[];
   coverImage?: SanityImage;
   images?: SanityImage[];
-  placeholderSrc?: string;
 }
 
 interface ProjectsGridProps {
@@ -37,7 +36,6 @@ export default function ProjectsGrid({ projects }: ProjectsGridProps) {
               href={`/projects/${project.slug}`}
               className="group block overflow-hidden rounded-lg bg-white shadow transition-shadow duration-300 hover:shadow-lg"
             >
-              {/* Card image */}
               <div className="relative h-48 w-full overflow-hidden">
                 {hasImage ? (
                   <Image
@@ -48,19 +46,8 @@ export default function ProjectsGrid({ projects }: ProjectsGridProps) {
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                ) : project.placeholderSrc ? (
-                  <Image
-                    src={project.placeholderSrc}
-                    alt={`${project.title} - Bridge Craft Engineers`}
-                    width={800}
-                    height={500}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-[#F8F9FA]">
-                    <Briefcase className="h-12 w-12 text-charcoal/20" />
-                  </div>
+                  <ImagePlaceholder variant="card" />
                 )}
               </div>
 

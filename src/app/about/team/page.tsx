@@ -2,11 +2,10 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import PageHero from '@/components/layout/PageHero';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import { User } from 'lucide-react';
+import ImagePlaceholder from '@/components/ui/ImagePlaceholder';
 import { sanityFetch, urlFor, isSanityConfigured } from '@/lib/sanity';
 import { teamMembersQuery } from '@/lib/queries';
 import { teamMembers as seedTeamMembers } from '@/lib/seed-data';
-import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -47,7 +46,6 @@ export default async function TeamPage() {
       <PageHero
         title="Our Team"
         subtitle="Experienced professionals committed to engineering excellence"
-        placeholderSrc={heroImages['about-team']}
       />
 
       <section className="py-20 sm:py-24">
@@ -71,9 +69,7 @@ export default async function TeamPage() {
                           sizes="96px"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-[#F8F9FA]">
-                          <User className="h-10 w-10 text-charcoal/30" />
-                        </div>
+                        <ImagePlaceholder variant="avatar" />
                       )}
                     </div>
 

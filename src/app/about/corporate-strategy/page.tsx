@@ -4,7 +4,6 @@ import { sanityFetch } from '@/lib/sanity';
 import { corporateStrategyQuery } from '@/lib/queries';
 import { strategyPillars as seedPillars } from '@/lib/seed-data';
 import CorporateStrategyClient from './CorporateStrategyClient';
-import { heroImages } from '@/lib/placeholder-images';
 
 export const revalidate = 60;
 
@@ -28,7 +27,6 @@ export default async function CorporateStrategyPage() {
         title="Corporate Strategy"
         subtitle="Four pillars that guide our growth and delivery"
         image={data?.heroImage}
-        placeholderSrc={!data?.heroImage ? heroImages['about-strategy'] : undefined}
       />
 
       <section className="py-20 sm:py-24">

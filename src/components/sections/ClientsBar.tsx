@@ -1,5 +1,6 @@
 import Image from "next/image";
 import AnimatedSection from "@/components/ui/AnimatedSection";
+import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import { urlFor, isSanityConfigured } from "@/lib/sanity";
 
 interface SanityImage {
@@ -26,7 +27,7 @@ export default function ClientsBar({ clients }: ClientsBarProps) {
           return (
             <div
               key={client.name}
-              className="flex items-center justify-center rounded-lg border border-gray-100 bg-white p-6 grayscale transition-all duration-300 hover:grayscale-0 hover:shadow-md"
+              className="flex h-24 items-center justify-center rounded-lg border border-gray-100 bg-white p-4 grayscale transition-all duration-300 hover:grayscale-0 hover:shadow-md"
               title={client.name}
             >
               {hasLogo ? (
@@ -39,9 +40,7 @@ export default function ClientsBar({ clients }: ClientsBarProps) {
                   sizes="150px"
                 />
               ) : (
-                <span className="text-center font-heading text-sm font-medium text-charcoal">
-                  {client.name}
-                </span>
+                <ImagePlaceholder variant="logo" label={client.name} className="h-full w-full" />
               )}
             </div>
           );

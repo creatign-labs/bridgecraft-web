@@ -3,10 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ClipboardCheck, Building2, Layers, Radio } from "lucide-react";
 import { urlFor, isSanityConfigured } from "@/lib/sanity";
-
-const fallbackIcons = [ClipboardCheck, Building2, Layers, Radio];
+import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 
 interface SanityImage {
   asset: unknown;
@@ -18,7 +16,6 @@ interface Service {
   slug: string;
   shortDescription: string;
   iconImage?: SanityImage;
-  placeholderSrc?: string;
 }
 
 interface ServicesGridProps {
@@ -54,8 +51,7 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
     >
-      {services.map((service, index) => {
-        const FallbackIcon = fallbackIcons[index % fallbackIcons.length];
+      {services.map((service) => {
         const hasIconImage = service.iconImage?.asset && isSanityConfigured;
 
         return (
@@ -67,42 +63,28 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
               href={`/services/${service.slug}`}
               className="group flex h-full flex-col rounded-xl bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
             >
-              {/* Icon */}
-              <div className="mb-4 flex h-[200px] w-[200px] items-center justify-center self-center overflow-hidden rounded-lg">
+              <div className="mb-4 h-[200px] w-[200px] self-center overflow-hidden rounded-lg">
                 {hasIconImage ? (
                   <Image
                     src={urlFor(service.iconImage!).width(200).height(200).fit("crop").url()}
                     alt={service.iconImage!.alt || service.title}
                     width={200}
                     height={200}
-                    className="object-cover"
-                  />
-                ) : service.placeholderSrc ? (
-                  <Image
-                    src={service.placeholderSrc}
-                    alt={service.title}
-                    width={200}
-                    height={200}
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-primary/10">
-                    <FallbackIcon className="h-16 w-16 text-primary-dark" />
-                  </div>
+                  <ImagePlaceholder variant="icon" label={service.title} />
                 )}
               </div>
 
-              {/* Title */}
               <h3 className="font-heading text-lg font-bold text-charcoal group-hover:text-primary-dark">
                 {service.title}
               </h3>
 
-              {/* Description */}
               <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-600">
                 {service.shortDescription}
               </p>
 
-              {/* Learn More link */}
               <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-medium text-[#4ecbcc] transition-colors group-hover:text-[#3ba8a9]">
                 Learn More &rarr;
               </span>

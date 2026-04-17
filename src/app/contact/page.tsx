@@ -2,7 +2,6 @@ import PageHero from '@/components/layout/PageHero';
 import { sanityFetch } from '@/lib/sanity';
 import { contactInfoQuery } from '@/lib/queries';
 import { companyInfo } from '@/lib/seed-data';
-import { heroImages } from '@/lib/placeholder-images';
 import ContactClient from './ContactClient';
 
 export const revalidate = 60;
@@ -33,7 +32,6 @@ export default async function ContactPage() {
         title="Contact Us"
         subtitle="We would love to hear about your project"
         image={sanityContact?.heroImage}
-        placeholderSrc={!sanityContact?.heroImage ? heroImages.contact : undefined}
       />
 
       <ContactClient contactInfo={contactInfo} />
